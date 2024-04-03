@@ -17,6 +17,7 @@ class AgentData(BaseModel):
     accelerometer: AccelerometerData
     gps: GpsData
     timestamp: datetime
+    user_id: int
 
     @classmethod
     @field_validator("timestamp", mode="before")

@@ -132,11 +132,15 @@ async def create_processed_agent_data(data: List[ProcessedAgentData]):
     inserted = []
     with SessionLocal() as database:
         for data_item in data:
-            values = get_values_from_data(data_item)
-            query = processed_agent_data.insert().values(values)
-            database.execute(query)
-            database.commit()
-            inserted.append(values)
+            try:
+                values = get_values_from_data(data_item)
+                query = processed_agent_data.insert().values(values)
+                database.execute(query)
+                database.commit()
+                inserted.append(values)
+            except Exception as e:
+                database.rollback()
+                raise e
     # Send data to subscribers
     if (len(inserted) > 0):
         await send_data_to_subscribers(data[0].agent_data.user_id, data)

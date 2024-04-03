@@ -1,0 +1,63 @@
+postgres_db  | The files belonging to this database system will be owned by user "postgres".
+postgres_db  | This user must also own the server process.
+postgres_db  | 
+postgres_db  | The database cluster will be initialized with locale "en_US.utf8".
+postgres_db  | The default database encoding has accordingly been set to "UTF8".
+postgres_db  | The default text search configuration will be set to "english".
+postgres_db  | 
+postgres_db  | Data page checksums are disabled.
+postgres_db  | 
+postgres_db  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres_db  | creating subdirectories ... ok
+postgres_db  | selecting dynamic shared memory implementation ... posix
+postgres_db  | selecting default max_connections ... 100
+postgres_db  | selecting default shared_buffers ... 128MB
+postgres_db  | selecting default time zone ... Etc/UTC
+postgres_db  | creating configuration files ... ok
+postgres_db  | running bootstrap script ... ok
+postgres_db  | performing post-bootstrap initialization ... ok
+postgres_db  | syncing data to disk ... ok
+postgres_db  | 
+postgres_db  | 
+postgres_db  | Success. You can now start the database server using:
+postgres_db  | 
+postgres_db  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres_db  | 
+postgres_db  | initdb: warning: enabling "trust" authentication for local connections
+postgres_db  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+postgres_db  | waiting for server to start....2024-04-03 17:40:21.629 UTC [48] LOG:  starting PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres_db  | 2024-04-03 17:40:21.639 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres_db  | 2024-04-03 17:40:21.690 UTC [51] LOG:  database system was shut down at 2024-04-03 17:40:18 UTC
+postgres_db  | 2024-04-03 17:40:21.720 UTC [48] LOG:  database system is ready to accept connections
+postgres_db  |  done
+postgres_db  | server started
+postgres_db  | CREATE DATABASE
+postgres_db  | 
+postgres_db  | 
+postgres_db  | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/structure.sql
+postgres_db  | CREATE TABLE
+postgres_db  | 
+postgres_db  | 
+postgres_db  | 2024-04-03 17:40:22.115 UTC [48] LOG:  received fast shutdown request
+postgres_db  | waiting for server to shut down....2024-04-03 17:40:22.121 UTC [48] LOG:  aborting any active transactions
+postgres_db  | 2024-04-03 17:40:22.126 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+postgres_db  | 2024-04-03 17:40:22.126 UTC [49] LOG:  shutting down
+postgres_db  | 2024-04-03 17:40:22.134 UTC [49] LOG:  checkpoint starting: shutdown immediate
+postgres_db  | 2024-04-03 17:40:22.659 UTC [49] LOG:  checkpoint complete: wrote 930 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.229 s, sync=0.270 s, total=0.534 s; sync files=304, longest=0.017 s, average=0.001 s; distance=4273 kB, estimate=4273 kB; lsn=0/1916DF0, redo lsn=0/1916DF0
+postgres_db  | 2024-04-03 17:40:22.670 UTC [48] LOG:  database system is shut down
+postgres_db  |  done
+postgres_db  | server stopped
+postgres_db  | 
+postgres_db  | PostgreSQL init process complete; ready for start up.
+postgres_db  | 
+postgres_db  | 2024-04-03 17:40:22.824 UTC [1] LOG:  starting PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres_db  | 2024-04-03 17:40:22.824 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+postgres_db  | 2024-04-03 17:40:22.824 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+postgres_db  | 2024-04-03 17:40:22.908 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres_db  | 2024-04-03 17:40:23.002 UTC [66] LOG:  database system was shut down at 2024-04-03 17:40:22 UTC
+postgres_db  | 2024-04-03 17:40:23.003 UTC [67] FATAL:  the database system is starting up
+postgres_db  | 2024-04-03 17:40:23.032 UTC [1] LOG:  database system is ready to accept connections
+postgres_db  | 2024-04-03 17:45:23.098 UTC [64] LOG:  checkpoint starting: time
+postgres_db  | 2024-04-03 17:46:01.980 UTC [64] LOG:  checkpoint complete: wrote 399 buffers (2.4%); 1 WAL file(s) added, 0 removed, 0 recycled; write=38.734 s, sync=0.026 s, total=38.883 s; sync files=26, longest=0.006 s, average=0.001 s; distance=5384 kB, estimate=5384 kB; lsn=0/1F00A68, redo lsn=0/1E58E60
+store        | 	Is the server running on host "postgres_db" (192.168.16.2) and accepting
+store        | 	Is the server running on host "postgres_db" (192.168.16.2) and accepting
