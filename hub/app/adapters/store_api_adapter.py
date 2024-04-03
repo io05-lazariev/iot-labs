@@ -22,3 +22,11 @@ class StoreApiAdapter(StoreGateway):
             bool: True if the data is successfully saved, False otherwise.
         """
         # Implement it
+        endpoint = f"{self.api_base_url}/processed_agent_data"
+        data = [data.model_dump_json() for data in processed_agent_data_batch]
+        headers = {'Content-Type': 'application/json'}
+        with requests.post(endpoint, '[' + ','.join(data) + ']', headers) as response:
+            if response.status_code == 200:
+                return True
+            logging.error(f"Invalid response. Given data: {data}\nRecieved: {response}")
+            return False

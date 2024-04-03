@@ -129,14 +129,17 @@ async def send_data_to_subscribers(user_id: int, data):
 @app.post("/processed_agent_data/")
 async def create_processed_agent_data(data: List[ProcessedAgentData]):
     # Insert data to database
+    inserted = []
     with SessionLocal() as database:
         for data_item in data:
             values = get_values_from_data(data_item)
             query = processed_agent_data.insert().values(values)
             database.execute(query)
             database.commit()
+            inserted.append(values)
     # Send data to subscribers
-    await send_data_to_subscribers(data[0].agent_data.user_id, data)
+    if (len(inserted) > 0):
+        await send_data_to_subscribers(data[0].agent_data.user_id, data)
 
 
 @app.get(

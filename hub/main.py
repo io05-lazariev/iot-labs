@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import List
 
@@ -35,24 +36,41 @@ store_adapter = StoreApiAdapter(api_base_url=STORE_API_BASE_URL)
 # FastAPI
 app = FastAPI()
 
+batch_sent = False
+
 
 @app.post("/processed_agent_data/")
 async def save_processed_agent_data(processed_agent_data: ProcessedAgentData):
+    global batch_sent
     redis_client.lpush("processed_agent_data", processed_agent_data.model_dump_json())
+    print("Written to redis\n", processed_agent_data.model_dump_json())
     if redis_client.llen("processed_agent_data") >= BATCH_SIZE:
+        print("Data stored:\n", redis_client.llen("processed_agent_data"))
         processed_agent_data_batch: List[ProcessedAgentData] = []
         for _ in range(BATCH_SIZE):
+            removed_data = redis_client.lpop("processed_agent_data")
+            print("Removed from redis\n", removed_data)
             processed_agent_data = ProcessedAgentData.model_validate_json(
-                redis_client.lpop("processed_agent_data")
+                removed_data
             )
             processed_agent_data_batch.append(processed_agent_data)
         print(processed_agent_data_batch)
         store_adapter.save_data(processed_agent_data_batch=processed_agent_data_batch)
+        publish_messages(client, MQTT_TOPIC, processed_agent_data_batch)
+        batch_sent = True
+        redis_client.delete("processed_agent_data")
     return {"status": "ok"}
 
 
 # MQTT
 client = mqtt.Client()
+
+def publish_messages(client, topic, messages):
+    data = [json.loads(item.json()) for item in messages]
+    for message in data:
+        message_str = json.dumps(message)
+        print("Data to mqtt", message_str)
+        client.publish(topic, message_str)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -64,6 +82,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    global batch_sent
     try:
         payload: str = msg.payload.decode("utf-8")
         # Create ProcessedAgentData instance with the received data
@@ -75,16 +94,20 @@ def on_message(client, userdata, msg):
             "processed_agent_data", processed_agent_data.model_dump_json()
         )
         processed_agent_data_batch: List[ProcessedAgentData] = []
-        if redis_client.llen("processed_agent_data") >= BATCH_SIZE:
+        if redis_client.llen("processed_agent_data") >= BATCH_SIZE and not batch_sent:
             for _ in range(BATCH_SIZE):
                 processed_agent_data = ProcessedAgentData.model_validate_json(
                     redis_client.lpop("processed_agent_data")
                 )
                 processed_agent_data_batch.append(processed_agent_data)
         store_adapter.save_data(processed_agent_data_batch=processed_agent_data_batch)
+        publish_messages(client, MQTT_TOPIC, processed_agent_data_batch)
+        batch_sent = True
         return {"status": "ok"}
     except Exception as e:
         logging.info(f"Error processing MQTT message: {e}")
+    finally:
+        batch_sent = False
 
 
 # Connect
